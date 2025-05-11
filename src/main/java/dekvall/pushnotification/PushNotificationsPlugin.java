@@ -82,7 +82,6 @@ public class PushNotificationsPlugin extends Plugin
 			.header("User-Agent", "RuneLite")
 			.header("Access-Token", config.pushbullet())
 			.header("Content-Type", "application/json")
-			.header("User-Agent", "RuneLite")
 			.post(push)
 			.url(url)
 			.build();
@@ -113,7 +112,6 @@ public class PushNotificationsPlugin extends Plugin
 		Request request = new Request.Builder()
 			.header("User-Agent", "RuneLite")
 			.header("Content-Type", "application/json")
-			.header("User-Agent", "RuneLite")
 			.post(push)
 			.url(url)
 			.build();
