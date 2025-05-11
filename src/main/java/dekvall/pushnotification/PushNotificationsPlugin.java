@@ -55,6 +55,7 @@ public class PushNotificationsPlugin extends Plugin
 	{
 		handlePushbullet(event);
 		handlePushover(event);
+		handleGotify(event);
 	}
 
 	private void handlePushbullet(NotificationFired event)
@@ -118,6 +119,40 @@ public class PushNotificationsPlugin extends Plugin
 			.build();
 
 		sendRequest("Pushover", request);
+	}
+
+	private void handleGotify(NotificationFired event) 
+	{
+		if(Strings.isNullOrEmpty(config.gotify_url()) || Strings.isNullOrEmpty(config.gotify_token()))
+		{
+			return;
+		}
+
+		HttpUrl parsedUrl = HttpUrl.parse(config.gotify_url());
+
+		if (parsedUrl == null)
+		{
+			log.warn("Invalid Gotify URL, expected format: http or https://<host>:<port>/message");
+			return;
+		}
+
+		HttpUrl url = parsedUrl.newBuilder()
+			.addQueryParameter("token", config.gotify_token())
+			.build();
+		
+		RequestBody push = new FormBody.Builder()
+			.add("title", event.getMessage())
+			.add("message", event.getMessage())
+			.add("priority", String.valueOf(config.gotify_priority()))
+			.build();
+
+		Request request = new Request.Builder()
+			.header("User-Agent", "RuneLite")
+			.post(push)
+			.url(url)
+			.build();
+
+		sendRequest("Gotify", request);
 	}
 
 	private static void sendRequest(String platform, Request request)
