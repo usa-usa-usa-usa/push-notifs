@@ -50,7 +50,7 @@ public interface PushNotificationsConfig extends Config
 		description = "API token for pushbullet",
 		section = pushbulletSection
 	)
-	String pushbullet();
+	String pushbulletToken();
 
 	@ConfigSection(
 		name = "Pushover",
@@ -65,7 +65,7 @@ public interface PushNotificationsConfig extends Config
 		description = "User key for Pushover",
 		section = pushoverSection
 	)
-	String pushover_user();
+	String pushoverUser();
 
 	@ConfigItem(
 		keyName = "pushover_api",
@@ -73,7 +73,7 @@ public interface PushNotificationsConfig extends Config
 		description = "API token for Pushover",
 		section = pushoverSection
 	)
-	String pushover_api();
+	String pushoverToken();
 
 	@ConfigSection(
 		name = "Gotify",
@@ -88,7 +88,7 @@ public interface PushNotificationsConfig extends Config
 		description = "URL for Gotify server, example: http://10.0.0.30:8080/message",
 		section = gotifySection
 	)
-	String gotify_url();
+	String gotifyUrl();
 
 	@ConfigItem(
 		keyName = "gotify_token",
@@ -96,7 +96,7 @@ public interface PushNotificationsConfig extends Config
 		description = "Token for Gotify server",
 		section = gotifySection
 	)
-	String gotify_token();
+	String gotifyToken();
 
 	@ConfigItem(
 		keyName = "gotify_priority",
@@ -104,7 +104,7 @@ public interface PushNotificationsConfig extends Config
 		description = "Priority for Gotify notification",
 		section = gotifySection
 	)
-	default int gotify_priority() {
+	default int gotifyPriority() {
 		return 5;
 	}
 }

@@ -118,7 +118,7 @@ public class PushNotificationsPlugin extends Plugin
 
 	private void handlePushbullet(String message)
 	{
-		if (Strings.isNullOrEmpty(config.pushbullet()))
+		if (Strings.isNullOrEmpty(config.pushbulletToken()))
 		{
 			return;
 		}
@@ -138,7 +138,7 @@ public class PushNotificationsPlugin extends Plugin
 
 		Request request = new Request.Builder()
 			.header("User-Agent", "RuneLite")
-			.header("Access-Token", config.pushbullet())
+			.header("Access-Token", config.pushbulletToken())
 			.header("Content-Type", "application/json")
 			.post(push)
 			.url(url)
@@ -149,7 +149,7 @@ public class PushNotificationsPlugin extends Plugin
 
 	private void handlePushover(String message)
 	{
-		if (Strings.isNullOrEmpty(config.pushover_api()) || Strings.isNullOrEmpty(config.pushover_user()))
+		if (Strings.isNullOrEmpty(config.pushoverToken()) || Strings.isNullOrEmpty(config.pushoverUser()))
 		{
 			return;
 		}
@@ -162,8 +162,8 @@ public class PushNotificationsPlugin extends Plugin
 			.build();
 
 		RequestBody push = new FormBody.Builder()
-			.add("token", config.pushover_api())
-			.add("user", config.pushover_user())
+			.add("token", config.pushoverToken())
+			.add("user", config.pushoverUser())
 			.add("message", message)
 			.build();
 
@@ -179,12 +179,12 @@ public class PushNotificationsPlugin extends Plugin
 
 	private void handleGotify(String message)
 	{
-		if (Strings.isNullOrEmpty(config.gotify_url()) || Strings.isNullOrEmpty(config.gotify_token()))
+		if (Strings.isNullOrEmpty(config.gotifyUrl()) || Strings.isNullOrEmpty(config.gotifyToken()))
 		{
 			return;
 		}
 
-		HttpUrl parsedUrl = HttpUrl.parse(config.gotify_url());
+		HttpUrl parsedUrl = HttpUrl.parse(config.gotifyUrl());
 
 		if (parsedUrl == null)
 		{
@@ -193,13 +193,13 @@ public class PushNotificationsPlugin extends Plugin
 		}
 
 		HttpUrl url = parsedUrl.newBuilder()
-			.addQueryParameter("token", config.gotify_token())
+			.addQueryParameter("token", config.gotifyToken())
 			.build();
 		
 		RequestBody push = new FormBody.Builder()
 			.add("title", message)
 			.add("message", message)
-			.add("priority", String.valueOf(config.gotify_priority()))
+			.add("priority", String.valueOf(config.gotifyPriority()))
 			.build();
 
 		Request request = new Request.Builder()
