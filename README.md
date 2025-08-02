@@ -1,5 +1,5 @@
 # Push Notifications
-Send notifications to your phone or other devices, currently supports [Pushbullet](https://www.pushbullet.com/), [Pushover](https://pushover.net/) and [Gotify](https://gotify.net).
+Forward notifications to your phone or other devices, currently supports [Pushbullet](https://www.pushbullet.com/), [Pushover](https://pushover.net/) and [Gotify](https://gotify.net).
 
 ## Pushbullet
 You need to provide a pushbullet api key to use this service.
@@ -37,3 +37,24 @@ Gotify token can be created under `Apps/Create Application`
 Example notification
 
 ![example-gotify](imgs/gotify-example.png)
+
+# Triggering a push notification
+The easiest way to trigger a push notification is to use the standard notification api: `notifier.notify("notification text")`, the notification text will be forwarded to the configured services.
+
+There is also the option to send a `PluginMessage` with namespace `push-notifications` and name `notify`. This will forward the value of `$.message`.
+
+## Watchdog
+Within watchdog, configure a notification of type "Plugin Message" with the namespace `push-notifications` and method `notify`.
+
+![example-create-watchdog](imgs/create-new-watchdog.png)
+
+Add the message data as a JSON message:
+```json
+{"message": "test from watchdog"}
+```
+
+![example-create-watchdog-1](imgs/create-new-watchdog-1.png)
+
+Test the alert from within watchdog using the potion icon.
+
+![example-pushover-watchdog](imgs/pushover-watchdog-example.png)

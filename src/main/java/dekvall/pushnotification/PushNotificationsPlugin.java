@@ -9,6 +9,7 @@ import net.runelite.api.Client;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.NotificationFired;
+import net.runelite.client.events.PluginMessage;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.http.api.RuneLiteAPI;
@@ -53,14 +54,37 @@ public class PushNotificationsPlugin extends Plugin
 	@Subscribe
 	public void onNotificationFired(NotificationFired event)
 	{
-		handlePushbullet(event);
-		handlePushover(event);
-		handleGotify(event);
+		String message = event.getMessage();
+		push(message);
 	}
 
-	private void handlePushbullet(NotificationFired event)
+	@Subscribe
+	public void onPluginMessage(PluginMessage event) {
+		if (!"push-notifications".equals(event.getNamespace()) || !"notify".equals(event.getName()))
+		{
+			return;
+		}
+
+		Object maybeMessage = event.getData().get("message");
+		if (!(maybeMessage instanceof String))
+		{
+			return;
+		}
+
+		String message = (String)maybeMessage;
+		push(message);
+	}
+
+	private void push(String message)
 	{
-		if(Strings.isNullOrEmpty(config.pushbullet()))
+		handlePushbullet(message);
+		handlePushover(message);
+		handleGotify(message);
+	}
+
+	private void handlePushbullet(String message)
+	{
+		if (Strings.isNullOrEmpty(config.pushbullet()))
 		{
 			return;
 		}
@@ -74,7 +98,7 @@ public class PushNotificationsPlugin extends Plugin
 
 		RequestBody push = new FormBody.Builder()
 			.add("body", "You should probably do something about that..")
-			.add("title", event.getMessage())
+			.add("title", message)
 			.add("type", "note")
 			.build();
 
@@ -89,9 +113,9 @@ public class PushNotificationsPlugin extends Plugin
 		sendRequest("Pushbullet", request);
 	}
 
-	private void handlePushover(NotificationFired event)
+	private void handlePushover(String message)
 	{
-		if(Strings.isNullOrEmpty(config.pushover_api()) || Strings.isNullOrEmpty(config.pushover_user()))
+		if (Strings.isNullOrEmpty(config.pushover_api()) || Strings.isNullOrEmpty(config.pushover_user()))
 		{
 			return;
 		}
@@ -106,7 +130,7 @@ public class PushNotificationsPlugin extends Plugin
 		RequestBody push = new FormBody.Builder()
 			.add("token", config.pushover_api())
 			.add("user", config.pushover_user())
-			.add("message", event.getMessage())
+			.add("message", message)
 			.build();
 
 		Request request = new Request.Builder()
@@ -119,9 +143,9 @@ public class PushNotificationsPlugin extends Plugin
 		sendRequest("Pushover", request);
 	}
 
-	private void handleGotify(NotificationFired event) 
+	private void handleGotify(String message)
 	{
-		if(Strings.isNullOrEmpty(config.gotify_url()) || Strings.isNullOrEmpty(config.gotify_token()))
+		if (Strings.isNullOrEmpty(config.gotify_url()) || Strings.isNullOrEmpty(config.gotify_token()))
 		{
 			return;
 		}
@@ -139,8 +163,8 @@ public class PushNotificationsPlugin extends Plugin
 			.build();
 		
 		RequestBody push = new FormBody.Builder()
-			.add("title", event.getMessage())
-			.add("message", event.getMessage())
+			.add("title", message)
+			.add("message", message)
 			.add("priority", String.valueOf(config.gotify_priority()))
 			.build();
 
