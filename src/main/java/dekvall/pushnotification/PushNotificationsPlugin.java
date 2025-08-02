@@ -38,13 +38,13 @@ public class PushNotificationsPlugin extends Plugin
 	private PushNotificationsConfig config;
 
 	@Override
-	protected void startUp() throws Exception
+	protected void startUp()
 	{
 		log.info("Push Notifications started!");
 	}
 
 	@Override
-	protected void shutDown() throws Exception
+	protected void shutDown()
 	{
 		log.info("Push Notifications stopped!");
 	}
@@ -58,8 +58,12 @@ public class PushNotificationsPlugin extends Plugin
 	@Subscribe
 	public void onNotificationFired(NotificationFired event)
 	{
-		String message = event.getMessage();
-		push(message);
+		if (!config.forwardNotifications())
+		{
+			return;
+		}
+
+		push(event.getMessage());
 	}
 
 	@Subscribe
@@ -72,6 +76,11 @@ public class PushNotificationsPlugin extends Plugin
 
 		Object maybeMessage = event.getData().get("message");
 		if (!(maybeMessage instanceof String))
+		{
+			return;
+		}
+
+		if (!config.forwardPluginMessages())
 		{
 			return;
 		}

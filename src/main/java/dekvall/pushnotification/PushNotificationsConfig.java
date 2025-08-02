@@ -9,9 +9,38 @@ import net.runelite.client.config.ConfigSection;
 public interface PushNotificationsConfig extends Config
 {
 	@ConfigSection(
+		name = "Filters",
+		description = "Forwarding filters",
+		position = 0
+	)
+	String filtersSection = "filters";
+
+	@ConfigItem(
+		keyName = "forward_notifications",
+		name = "Forward notifications",
+		description = "Forward all notifications",
+		section = filtersSection
+	)
+	default boolean forwardNotifications()
+	{
+		return true;
+	};
+
+	@ConfigItem(
+		keyName = "forward_plugin_messages",
+		name = "Forward plugin messages",
+		description = "Forward all plugin messages",
+		section = filtersSection
+	)
+	default boolean forwardPluginMessages()
+	{
+		return true;
+	}
+
+	@ConfigSection(
 		name = "Pushbullet",
 		description = "Pushbullet Settings",
-		position = 0
+		position = 1
 	)
 	String pushbulletSection = "pushbullet";
 
@@ -26,7 +55,7 @@ public interface PushNotificationsConfig extends Config
 	@ConfigSection(
 		name = "Pushover",
 		description = "Pushover Settings",
-		position = 1
+		position = 2
 	)
 	String pushoverSection = "pushover";
 
@@ -49,7 +78,7 @@ public interface PushNotificationsConfig extends Config
 	@ConfigSection(
 		name = "Gotify",
 		description = "Gotify Settings",
-		position = 2
+		position = 3
 	)
 	String gotifySection = "gotify";
 
