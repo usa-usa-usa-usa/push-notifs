@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.events.CommandExecuted;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.NotificationFired;
@@ -76,6 +77,26 @@ public class PushNotificationsPlugin extends Plugin
 		}
 
 		String message = (String)maybeMessage;
+		push(message);
+	}
+
+	@Subscribe
+	public void onCommandExecuted(CommandExecuted event)
+	{
+		if (!event.getCommand().equalsIgnoreCase("sendpush"))
+		{
+			return;
+		}
+
+		final String message;
+		if (event.getArguments().length == 0)
+		{
+			message = "Test";
+		}
+		else
+		{
+			message = String.join(" ", event.getArguments());
+		}
 		push(message);
 	}
 
