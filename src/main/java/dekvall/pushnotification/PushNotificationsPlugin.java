@@ -12,11 +12,11 @@ import net.runelite.client.events.NotificationFired;
 import net.runelite.client.events.PluginMessage;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.http.api.RuneLiteAPI;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -29,6 +29,9 @@ public class PushNotificationsPlugin extends Plugin
 {
 	@Inject
 	private Client client;
+
+	@Inject
+	private OkHttpClient okHttpClient;
 
 	@Inject
 	private PushNotificationsConfig config;
@@ -178,9 +181,9 @@ public class PushNotificationsPlugin extends Plugin
 		sendRequest("Gotify", request);
 	}
 
-	private static void sendRequest(String platform, Request request)
+	private void sendRequest(String platform, Request request)
 	{
-		RuneLiteAPI.CLIENT.newCall(request).enqueue(new Callback()
+		okHttpClient.newCall(request).enqueue(new Callback()
 		{
 			@Override
 			public void onFailure(Call call, IOException e)
