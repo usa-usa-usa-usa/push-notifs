@@ -59,7 +59,8 @@ public class PushNotificationsPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onPluginMessage(PluginMessage event) {
+	public void onPluginMessage(PluginMessage event)
+	{
 		if (!"push-notifications".equals(event.getNamespace()) || !"notify".equals(event.getName()))
 		{
 			return;
