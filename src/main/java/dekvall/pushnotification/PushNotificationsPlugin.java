@@ -2,6 +2,7 @@ package dekvall.pushnotification;
 
 import com.google.common.base.Strings;
 import com.google.inject.Provides;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +18,12 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 
 @Slf4j
 @PluginDescriptor(
@@ -114,6 +117,7 @@ public class PushNotificationsPlugin extends Plugin
 		handlePushbullet(message);
 		handlePushover(message);
 		handleGotify(message);
+		handlePushcut(message);
 	}
 
 	private void handlePushbullet(String message)
@@ -209,6 +213,36 @@ public class PushNotificationsPlugin extends Plugin
 			.build();
 
 		sendRequest("Gotify", request);
+	}
+
+	private void handlePushcut(String message) {
+		if (Strings.isNullOrEmpty(config.pushcutSecret()) || Strings.isNullOrEmpty(config.pushcutNotification())) {
+			return;
+		}
+
+		HttpUrl url = new HttpUrl.Builder()
+				.scheme("https")
+				.host("api.pushcut.io")
+				.addPathSegment(config.pushcutSecret())
+				.addPathSegment("notifications")
+				.addPathSegment(config.pushcutNotification())
+				.build();
+
+		JsonObject json = new JsonObject();
+		json.addProperty("text", message);
+
+		RequestBody push = RequestBody.create(
+				MediaType.parse("application/json"),
+				json.toString()
+		);
+
+		Request request = new Request.Builder()
+				.header("User-Agent", "RuneLite")
+				.post(push)
+				.url(url)
+				.build();
+
+		sendRequest("PushCut", request);
 	}
 
 	private void sendRequest(String platform, Request request)

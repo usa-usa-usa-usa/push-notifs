@@ -107,4 +107,27 @@ public interface PushNotificationsConfig extends Config
 	default int gotifyPriority() {
 		return 5;
 	}
+
+	@ConfigSection(
+			name = "PushCut",
+			description = "PushCut Settings",
+			position = 4
+	)
+	String pushcutSection = "pushcut";
+
+	@ConfigItem(
+			keyName = "pushcut_notification",
+			name = "PushCut Notification",
+			description = "Name of the PushCut notification to trigger",
+			section = pushcutSection
+	)
+	String pushcutNotification();
+
+	@ConfigItem(
+			keyName = "pushcut_secret",
+			name = "PushCut Secret",
+			description = "PushCut webhook secret",
+			section = pushcutSection
+	)
+	String pushcutSecret();
 }
