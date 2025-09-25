@@ -169,7 +169,6 @@ public class PushNotificationsPlugin extends Plugin
 
 		Request request = new Request.Builder()
 			.header("User-Agent", "RuneLite")
-			.header("Content-Type", "application/json")
 			.post(push)
 			.url(url)
 			.build();
