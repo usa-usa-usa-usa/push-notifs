@@ -224,6 +224,10 @@ public class PushNotificationsPlugin extends Plugin
 			@Override
 			public void onResponse(Call call, Response response)
 			{
+				if (!response.isSuccessful())
+				{
+					log.warn("Error sending {} notification, received HTTP {} response", platform, response.code());
+				}
 				response.close();
 			}
 		});
